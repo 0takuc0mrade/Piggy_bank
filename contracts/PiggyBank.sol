@@ -15,6 +15,9 @@ contract PiggyBank {
 
     bool public isFinalized;
 
+    event deposited(address indexed user, uint256 amount);
+    event withdrawn(address indexed user, uint256 amount);
+
     // constructor
     constructor (uint256 _withdrawalDate, address _manager, address _token, string memory _savingPurpose) {
         require(_withdrawalDate > block.timestamp, 'WITHDRAWAL MUST BE IN FUTURE');
@@ -46,6 +49,7 @@ contract PiggyBank {
 
         // transfer the token to the contract
         require(IERC20(token).transferFrom(msg.sender, address(this), _amount), 'Transfer Failed');
+        emit deposited(msg.sender, _amount);
     }
 
     // withdrawal
@@ -57,6 +61,7 @@ contract PiggyBank {
         bool transaction = IERC20(token).transfer(msg.sender, _contractBal);
 
         require(transaction, "Transaction Failed");
+        emit withdrawn(msg.sender, _contractBal);
     }
 
     //forced withdrawal
@@ -68,6 +73,7 @@ contract PiggyBank {
             if(charge){
                 bool transaction = IERC20(token).transfer(msg.sender, _contractBal);
                 require(transaction, "Transaction Failed");
+                emit withdrawn(msg.sender, _contractBal);
             }
         }
     }

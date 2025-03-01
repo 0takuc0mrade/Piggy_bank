@@ -5,6 +5,7 @@ import "./PiggyBank.sol";
 
 contract PiggyBankFactory{
     mapping(address => address[]) public userBanks;
+    event bankCreated(address indexed owner, address piggybank, string savingPurpose);
 
     function createBank(uint256 _withdrawalDate, address _token, string memory _savingPurpose) external{
         bytes32 _salt = keccak256(abi.encode(block.timestamp, msg.sender, _token, _savingPurpose));
@@ -12,6 +13,7 @@ contract PiggyBankFactory{
         address bankAddress = address(bank);
 
         userBanks[msg.sender].push(bankAddress);
+        emit bankCreated(msg.sender, bankAddress, _savingPurpose);
     }
 
     function getUserBanks(address user) external view returns(address[] memory){
