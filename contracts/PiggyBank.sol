@@ -2,18 +2,18 @@
 pragma solidity ^0.8.28;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract PiggyBank is Ownable{
+
+contract PiggyBank {
     uint256 public immutable withdrawalDate;
     address public immutable token;
     address public immutable manager;
-    address public constant USDT = 0xdac17f958d2ee523a2206206994597c13d831ec7;
-    address public constant USDC = 0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48;
-    address public constant DAI = 0x3e622317f8c93f7328350cf0b56d9ed4c620c5d6;
+    address public constant USDT = 0xdAC17F958D2ee523a2206206994597C13D831ec7;
+    address public constant USDC = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
+    address public constant DAI = 0x3e622317f8C93f7328350cF0B56d9eD4C620C5d6;
     string public savingPurpose;
 
-    bool public finalized;
+    bool public isFinalized;
 
     // constructor
     constructor (uint256 _withdrawalDate, address _manager, address _token, string memory _savingPurpose) {
@@ -27,14 +27,16 @@ contract PiggyBank is Ownable{
 
     modifier allowedToken(address _token){
         require(_token == USDT || _token == USDC || _token == DAI, "Invalid token");
+        _;
     }
 
     modifier notFinalized(){
-        require(!finalized, "Contract's functionalities cannot be used");
+        require(!isFinalized, "Contract's functionalities cannot be used");
+        _;
     }
 
     // save
-    function save (uint256 _amount) external notFinalzed allowedToken(msg.sender){
+    function save (uint256 _amount) external notFinalized allowedToken(msg.sender){
 
         require(msg.sender != address(0), 'Unauthorized address');
 
@@ -72,6 +74,6 @@ contract PiggyBank is Ownable{
 
     function finalized() external{
         require(msg.sender == manager, 'Not manager');
-        finalized = true;
+        isFinalized = true;
     }
 }
