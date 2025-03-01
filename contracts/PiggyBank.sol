@@ -28,8 +28,8 @@ contract PiggyBank {
         savingPurpose = _savingPurpose;
     }
 
-    modifier allowedToken(address _token){
-        require(_token == USDT || _token == USDC || _token == DAI, "Invalid token");
+    modifier allowedToken(){
+        require(token == USDT || token == USDC || token == DAI, "Invalid token");
         _;
     }
 
@@ -39,7 +39,7 @@ contract PiggyBank {
     }
 
     // save
-    function save (uint256 _amount) external notFinalized allowedToken(msg.sender){
+    function save (uint256 _amount) external notFinalized allowedToken{
 
         require(msg.sender != address(0), 'Unauthorized address');
 

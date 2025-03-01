@@ -42,23 +42,25 @@ describe('PiggyBank and PiggyBankFactory Contract Tests', function () {
           'Vacation Savings',
         ),
       ).to.emit(piggyBankFactory, 'bankCreated');
+      const usdAddress = usdt.target;
+      console.log(usdAddress);
     });
   });
 
   describe('Deposits', () => {
-    it('Should allow deposits with USDT', async function () {
-      const { piggyBankFactory, owner, usdt, withdrawalTime } =
+    it('Should allow deposits with USDC', async function () {
+      const { piggyBankFactory, owner, usdc, withdrawalTime } =
         await loadFixture(deployContracts);
       await piggyBankFactory.createBank(
         withdrawalTime,
-        usdt.target,
+        usdc.target,
         'Vacation Savings',
       );
       const userBanks = await piggyBankFactory.getUserBanks(owner.address);
       const piggyBank = await ethers.getContractAt('PiggyBank', userBanks[0]);
 
       const depositAmount = ethers.parseEther('10');
-      await usdt.connect(owner).approve(piggyBank.target, depositAmount);
+      await usdc.connect(owner).approve(piggyBank.target, depositAmount);
       await expect(piggyBank.save(depositAmount)).to.emit(
         piggyBank,
         'deposited',
